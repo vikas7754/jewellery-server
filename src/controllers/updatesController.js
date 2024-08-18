@@ -2,8 +2,8 @@ const Update = require("../models/update");
 
 const addUpdate = async (req, res) => {
   try {
-    const { title, html } = req.body;
-    const update = new Update({ title, html });
+    const { title, message } = req.body;
+    const update = new Update({ title, message });
     await update.save();
     return res.status(201).json(update);
   } catch (error) {
@@ -13,11 +13,11 @@ const addUpdate = async (req, res) => {
 
 const updateUpdate = async (req, res) => {
   try {
-    const { title, html } = req.body;
+    const { title, message } = req.body;
     const { id } = req.params;
     const update = await Update.findByIdAndUpdate(
       id,
-      { title, html },
+      { title, message },
       { new: true }
     );
     return res.status(200).json(update);

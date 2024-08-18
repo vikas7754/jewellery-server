@@ -8,7 +8,7 @@ const updateSchema = new Schema(
       required: true,
       trim: true,
     },
-    html: {
+    message: {
       type: String,
       required: true,
     },

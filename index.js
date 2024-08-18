@@ -26,7 +26,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/details", require("./src/routes/detailsRoute"));
-app.use("/api/rate", require("./src/routes/rateRoute"));
+app.use("/api/delta", require("./src/routes/deltaRoute"));
+app.use("/api/update", require("./src/routes/updateRoute"));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

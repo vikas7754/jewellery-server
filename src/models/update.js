@@ -1,23 +1,20 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const detailsSchema = new Schema(
+const updateSchema = new Schema(
   {
     title: {
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
     html: {
       type: String,
       required: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Details = mongoose.model("Details", detailsSchema);
-module.exports = Details;
+const Update = mongoose.model("Update", updateSchema);
+module.exports = Update;

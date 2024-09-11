@@ -9,6 +9,13 @@ const signup = async (req, res) => {
     if (!name || !email || !mobile || !address)
       return res.status(400).json({ message: "All fields are required!" });
 
+    const isEmailExist = await User.findOne({ email });
+    if (isEmailExist)
+      return res.status(400).json({ message: "Email already exist!" });
+    const isMobileExist = await User.findOne({ mobile });
+    if (isMobileExist)
+      return res.status(400).json({ message: "Mobile already exist!" });
+
     const password = generatePassword();
     const user = new User({
       name,

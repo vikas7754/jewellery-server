@@ -2,7 +2,22 @@ const Delta = require("../models/delta");
 
 const addDelta = async (req, res) => {
   try {
-    const { product, amount } = req.body;
+    if (!req.body.product || !req.body.amount) {
+      return res
+        .status(400)
+        .json({ message: "Product and amount are required" });
+    }
+
+    const product = req.body.product.toLowerCase().trim();
+    const amount = req.body.amount.toLowerCase().trim();
+
+    const existingDelta = await Delta.findOne({ product });
+    if (existingDelta) {
+      return res
+        .status(400)
+        .json({ message: `Delta price for ${product} is already exist!` });
+    }
+
     const delta = new Delta({ product, amount });
     await delta.save();
     return res.status(201).json(delta);

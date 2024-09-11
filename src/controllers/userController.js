@@ -1,4 +1,32 @@
+const signupMail = require("../emails/emails/signup-email");
 const User = require("../models/user");
+
+const generatePassword = require("../utils/generatePassword");
+
+const signup = async (req, res) => {
+  try {
+    const { name, email, mobile, address, city, state } = req.body;
+    if (!name || !email || !mobile || !address)
+      return res.status(400).json({ message: "All fields are required!" });
+
+    const password = generatePassword();
+    const user = new User({
+      name,
+      email,
+      mobile,
+      password,
+      details: { address, city, state },
+    });
+    await user.save();
+
+    signupMail({ name, email, mobile, password });
+
+    const token = await user.generateToken();
+    return res.cookie("auth", token).json(user);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 const login = async (req, res) => {
   try {
@@ -8,7 +36,7 @@ const login = async (req, res) => {
     const isMatch = await user.comparepassword(password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password!" });
     const token = await user.generateToken();
-    await res.cookie("auth", token).json(user);
+    return res.cookie("auth", token).json(user);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -43,4 +71,4 @@ const me = async (req, res) => {
   }
 };
 
-module.exports = { login, me, logout };
+module.exports = { login, me, logout, signup };

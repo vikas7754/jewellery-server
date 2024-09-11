@@ -29,6 +29,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    details: {
+      type: Object,
+      default: {},
+    },
     token: {
       type: String,
     },

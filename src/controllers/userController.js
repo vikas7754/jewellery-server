@@ -1,5 +1,6 @@
 const signupMail = require("../emails/emails/signup-email");
 const User = require("../models/user");
+const XLSX = require("xlsx");
 
 const generatePassword = require("../utils/generatePassword");
 
@@ -90,4 +91,48 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { login, me, logout, signup, getUsers };
+const exportUsers = async (req, res) => {
+  const { startDate, endDate } = req.query;
+  try {
+    const query = { role: "user" };
+    if (startDate && endDate) {
+      query.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    }
+    const users = await User.find(query);
+
+    const data = users.map((user) => {
+      return {
+        Name: user.name,
+        Email: user.email,
+        Mobile: user.mobile,
+        Address: user.details?.address || "NA",
+        City: user.details?.city || "NA",
+        State: user.details?.state || "NA",
+      };
+    });
+
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "buffer",
+    });
+
+    res.setHeader("Content-Disposition", 'attachment; filename="users.xlsx"');
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.send(excelBuffer);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { login, me, logout, signup, getUsers, exportUsers };

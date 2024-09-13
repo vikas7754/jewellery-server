@@ -9,8 +9,17 @@ const detailsSchema = new Schema(
       trim: true,
       unique: true,
     },
-    html: {
-      type: String,
+    data: {
+      type: [
+        {
+          label: {
+            type: String,
+          },
+          value: {
+            type: String,
+          },
+        },
+      ],
       required: true,
     },
   },

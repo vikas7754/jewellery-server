@@ -12,8 +12,8 @@ const getDetails = async (req, res) => {
 
 const addDetails = async (req, res) => {
   try {
-    const { title, html } = req.body;
-    const details = new Details({ title, html });
+    const { title, data } = req.body;
+    const details = new Details({ title, data });
     await details.save();
     return res.status(201).json(details);
   } catch (error) {
@@ -23,9 +23,9 @@ const addDetails = async (req, res) => {
 
 const updateDetails = async (req, res) => {
   try {
-    const { title, html } = req.body;
+    const { title, data } = req.body;
     const details = await Details.findOne({ title });
-    details.html = html;
+    details.html = data;
     await details.save();
     return res.status(200).json(details);
   } catch (error) {

@@ -78,4 +78,16 @@ const me = async (req, res) => {
   }
 };
 
-module.exports = { login, me, logout, signup };
+const getUsers = async (req, res) => {
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
+  try {
+    const users = await User.find({ role: "user" }).skip(skip).limit(limit);
+    const total = await User.countDocuments({ role: "user" });
+    return res.status(200).json({ users, total });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { login, me, logout, signup, getUsers };

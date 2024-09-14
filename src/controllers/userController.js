@@ -83,7 +83,10 @@ const getUsers = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
   try {
-    const users = await User.find({ role: "user" }).skip(skip).limit(limit);
+    const users = await User.find({ role: "user" })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
     const total = await User.countDocuments({ role: "user" });
     return res.status(200).json({ users, total });
   } catch (err) {
@@ -109,8 +112,8 @@ const exportUsers = async (req, res) => {
         Email: user.email,
         Mobile: user.mobile,
         Address: user.details?.address || "NA",
-        City: user.details?.city || "NA",
-        State: user.details?.state || "NA",
+        // City: user.details?.city || "NA",
+        // State: user.details?.state || "NA",
       };
     });
 
@@ -135,4 +138,24 @@ const exportUsers = async (req, res) => {
   }
 };
 
-module.exports = { login, me, logout, signup, getUsers, exportUsers };
+const updateProfile = async (req, res) => {
+  try {
+    const { user } = req;
+    const updatedUser = await User.findByIdAndUpdate(user._id, req.body, {
+      new: true,
+    });
+    return res.status(200).json(updatedUser);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  login,
+  me,
+  logout,
+  signup,
+  getUsers,
+  exportUsers,
+  updateProfile,
+};

@@ -24,9 +24,11 @@ const addDetails = async (req, res) => {
 const updateDetails = async (req, res) => {
   try {
     const { title, data } = req.body;
-    const details = await Details.findOne({ title });
-    details.html = data;
-    await details.save();
+    const details = await Details.findOneAndUpdate(
+      { title },
+      { data },
+      { new: true }
+    );
     return res.status(200).json(details);
   } catch (error) {
     return res.status(500).json({ message: error.message });

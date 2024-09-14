@@ -1,8 +1,22 @@
 const signupMail = require("../emails/emails/signup-email");
 const User = require("../models/user");
+const Otp = require("../models/otp");
 const XLSX = require("xlsx");
 
 const generatePassword = require("../utils/generatePassword");
+const forgotPasswordRequestMail = require("../emails/emails/forgot-password-request");
+const passwordResetMail = require("../emails/emails/password-reset");
+
+const bcrypt = require("bcrypt");
+
+function generateOTP() {
+  let otp = "";
+  const digits = "0123456789";
+  for (let i = 0; i < 6; i++) {
+    otp += digits[Math.floor(Math.random() * 10)];
+  }
+  return otp.toString();
+}
 
 const signup = async (req, res) => {
   try {
@@ -150,6 +164,49 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const forgotPasswordRequest = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found!" });
+    const otp = generateOTP();
+    const newOtp = new Otp({ email, otp });
+
+    await forgotPasswordRequestMail(email, user.name, otp);
+
+    await Otp.deleteMany({ email });
+
+    await newOtp.save();
+
+    return res.status(200).json({ message: "OTP sent to your email!" });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email, otp, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found!" });
+
+    const otpData = await Otp.findOne({ email, otp });
+    if (!otpData)
+      return res.status(400).json({ message: "Invalid or Expired OTP!" });
+
+    const hash = await bcrypt.hash(password, 10);
+
+    await User.findByIdAndUpdate(user._id, { password: hash });
+    await Otp.deleteMany({ email });
+
+    passwordResetMail(email, user.name);
+
+    return res.status(200).json({ message: "Password changed successfully!" });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   login,
   me,
@@ -158,4 +215,6 @@ module.exports = {
   getUsers,
   exportUsers,
   updateProfile,
+  forgotPasswordRequest,
+  forgotPassword,
 };

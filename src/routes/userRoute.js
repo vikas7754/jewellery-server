@@ -9,5 +9,7 @@ router.get("/me", userController.me);
 router.get("/get-users", userController.getUsers);
 router.get("/export", userController.exportUsers);
 router.put("/profile", auth, roleAuth, userController.updateProfile);
+router.post("/forgot-password-request", userController.forgotPasswordRequest);
+router.post("/forgot-password", userController.forgotPassword);
 
 module.exports = router;

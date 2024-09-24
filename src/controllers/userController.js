@@ -3,6 +3,11 @@ const User = require("../models/user");
 const Otp = require("../models/otp");
 const XLSX = require("xlsx");
 
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+const uploadImage = require("../utils/upload-image");
+
 const generatePassword = require("../utils/generatePassword");
 const forgotPasswordRequestMail = require("../emails/emails/forgot-password-request");
 const passwordResetMail = require("../emails/emails/password-reset");
@@ -207,6 +212,21 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+const uploadSingleImage = async (req, res) => {
+  upload.single("image")(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ message: err.message || "Server error." });
+    }
+    const file = req.file;
+    try {
+      const result = await uploadImage(file);
+      return res.status(200).json(result);
+    } catch (err) {
+      return res.status(500).json({ message: err.message || "Server error." });
+    }
+  });
+};
+
 module.exports = {
   login,
   me,
@@ -217,4 +237,5 @@ module.exports = {
   updateProfile,
   forgotPasswordRequest,
   forgotPassword,
+  uploadSingleImage,
 };

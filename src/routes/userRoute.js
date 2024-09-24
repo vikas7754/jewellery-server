@@ -11,5 +11,6 @@ router.get("/export", userController.exportUsers);
 router.put("/profile", auth, roleAuth, userController.updateProfile);
 router.post("/forgot-password-request", userController.forgotPasswordRequest);
 router.post("/forgot-password", userController.forgotPassword);
+router.post("/upload-image", userController.uploadSingleImage);
 
 module.exports = router;

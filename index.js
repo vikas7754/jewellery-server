@@ -4,6 +4,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const { v2 } = require("cloudinary");
+v2.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+  secure: true,
+});
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -32,6 +39,7 @@ app.use("/api/delta", require("./src/routes/deltaRoute"));
 app.use("/api/update", require("./src/routes/updateRoute"));
 app.use("/api/user", require("./src/routes/userRoute"));
 app.use("/api/enquiry", require("./src/routes/enquiryRoute"));
+app.use("/api/product", require("./src/routes/productRoute"));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

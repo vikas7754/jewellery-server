@@ -26,7 +26,7 @@ function generateOTP() {
 const signup = async (req, res) => {
   try {
     const { name, email, mobile, address, city, state } = req.body;
-    if (!name || !email || !mobile || !address)
+    if (!name || !email || !mobile || !city)
       return res.status(400).json({ message: "All fields are required!" });
 
     const isEmailExist = await User.findOne({ email });

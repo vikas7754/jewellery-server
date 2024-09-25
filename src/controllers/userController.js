@@ -130,9 +130,8 @@ const exportUsers = async (req, res) => {
         Name: user.name,
         Email: user.email,
         Mobile: user.mobile,
+        City: user.details?.city || "NA",
         Address: user.details?.address || "NA",
-        // City: user.details?.city || "NA",
-        // State: user.details?.state || "NA",
       };
     });
 

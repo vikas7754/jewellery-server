@@ -9,14 +9,10 @@ const productSchema = new Schema(
       unique: true,
       trim: true,
     },
-    category: {
+    karat: {
       type: String,
       required: true,
       trim: true,
-    },
-    order: {
-      type: Number,
-      required: true,
     },
     percentage: {
       type: Number,

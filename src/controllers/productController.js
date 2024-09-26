@@ -2,11 +2,10 @@ const Product = require("../models/product");
 
 const addProduct = async (req, res) => {
   try {
-    const { title, category, order, percentage, show } = req.body;
+    const { karat, percentage, show } = req.body;
     const newProduct = new Product({
-      title,
-      category,
-      order,
+      title: `Gold Rate (${karat}K)`,
+      karat,
       percentage,
       show,
     });
@@ -19,10 +18,10 @@ const addProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { title, category, order, percentage, show } = req.body;
+    const { karat, percentage, show } = req.body;
     const product = await Product.findByIdAndUpdate(
       { _id: req.params.id },
-      { title, category, order, percentage, show }
+      { title: `Gold Rate (${karat}K)`, karat, percentage, show }
     );
     return res.status(200).json(product);
   } catch (err) {
@@ -55,8 +54,7 @@ const deleteProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find().sort({
-      category: 1,
-      order: 1,
+      karat: -1,
       createdAt: 1,
     });
     return res.status(200).json(products);

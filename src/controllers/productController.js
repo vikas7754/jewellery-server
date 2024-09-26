@@ -4,7 +4,7 @@ const addProduct = async (req, res) => {
   try {
     const { karat, percentage, show } = req.body;
     const newProduct = new Product({
-      title: `Gold Rate (${karat}K)`,
+      title: `Gold Rate (${karat}Kt)`,
       karat,
       percentage,
       show,
@@ -21,7 +21,7 @@ const updateProduct = async (req, res) => {
     const { karat, percentage, show } = req.body;
     const product = await Product.findByIdAndUpdate(
       { _id: req.params.id },
-      { title: `Gold Rate (${karat}K)`, karat, percentage, show }
+      { title: `Gold Rate (${karat}Kt)`, karat, percentage, show }
     );
     return res.status(200).json(product);
   } catch (err) {

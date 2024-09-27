@@ -41,6 +41,7 @@ app.use("/api/user", require("./src/routes/userRoute"));
 app.use("/api/enquiry", require("./src/routes/enquiryRoute"));
 app.use("/api/product", require("./src/routes/productRoute"));
 app.use("/api/charges", require("./src/routes/chargesRoute"));
+app.use("/api/header", require("./src/routes/headerRoute"));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

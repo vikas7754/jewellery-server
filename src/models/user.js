@@ -22,6 +22,9 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: 1,
     },
+    whatsapp: {
+      type: String,
+    },
     role: {
       type: String,
       default: "user",
